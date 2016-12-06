@@ -1,0 +1,83 @@
+---
+title: "plotly"
+author: "Steven Zhang"
+date: "Dec 6, 2016"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(forecast)
+library(quantmod)
+library(plotly)
+```
+
+## Summary
+
+Let's Draw a Map to see some stock volume each month since 5 years ago.
+
+```{r plot.prepare, include=FALSE}
+getSymbols("GOOG")
+getSymbols("MSFT")
+getSymbols("FB")
+
+mFB <- to.monthly(FB)
+FBOpen <- Vo(mFB)
+ts.FB <- ts(FBOpen, frequency = 12)
+ts.FB <- data.frame(code = "FB", open = ts.FB, year = 1:56)
+names(ts.FB) <- c("code", "Volume", "Month")
+
+mGoog <- to.monthly(GOOG)
+googOpen <- Vo(mGoog)
+ts.goog <- ts(googOpen, frequency = 12)
+ts.goog <- ts.goog[65:120]
+ts.goog <- data.frame(code = "GOOG", open = ts.goog, year = 1:56)
+names(ts.goog) <- c("code", "Volume", "Month")
+
+mMSFT <- to.monthly(MSFT)
+MSFTOpen <- Vo(mMSFT)
+ts.MSFT <- ts(MSFTOpen, frequency = 12)
+ts.MSFT <- ts.MSFT[65:120]
+ts.MSFT <- data.frame(code = "MSFT", open = ts.MSFT, year = 1:56)
+names(ts.MSFT) <- c("code", "Volume", "Month")
+
+ts.total <- rbind(ts.goog, ts.MSFT, ts.FB)
+```
+
+```{r plot}
+plot_ly(ts.total, x = ~Month, y = ~Volume, color = ~code, type = "scattergl", mode = "lines")
+```
+
+## Code
+
+The code is shown below
+
+```{r code, eval=FALSE}
+etSymbols("GOOG")
+getSymbols("MSFT")
+getSymbols("FB")
+
+mFB <- to.monthly(FB)
+FBOpen <- Vo(mFB)
+ts.FB <- ts(FBOpen, frequency = 12)
+ts.FB <- data.frame(code = "FB", open = ts.FB, year = 1:56)
+names(ts.FB) <- c("code", "Volume", "Month")
+
+mGoog <- to.monthly(GOOG)
+googOpen <- Vo(mGoog)
+ts.goog <- ts(googOpen, frequency = 12)
+ts.goog <- ts.goog[65:120]
+ts.goog <- data.frame(code = "GOOG", open = ts.goog, year = 1:56)
+names(ts.goog) <- c("code", "Volume", "Month")
+
+mMSFT <- to.monthly(MSFT)
+MSFTOpen <- Vo(mMSFT)
+ts.MSFT <- ts(MSFTOpen, frequency = 12)
+ts.MSFT <- ts.MSFT[65:120]
+ts.MSFT <- data.frame(code = "MSFT", open = ts.MSFT, year = 1:56)
+names(ts.MSFT) <- c("code", "Volume", "Month")
+
+ts.total <- rbind(ts.goog, ts.MSFT, ts.FB)
+
+plot_ly(ts.total, x = ~Month, y = ~Volume, color = ~code, type = "scattergl", mode = "lines")
+```
